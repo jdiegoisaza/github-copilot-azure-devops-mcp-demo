@@ -1,0 +1,18 @@
+trigger:
+- main
+
+pr:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo "Restoring dependencies"
+  displayName: Restore
+
+- script: echo "Building application"
+  displayName: Build
+
+- script: echo "Running unit tests"
+  displayName: Test
