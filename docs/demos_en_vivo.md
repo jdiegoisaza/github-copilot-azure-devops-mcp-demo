@@ -1,286 +1,222 @@
 # DEMOS EN VIVO
 
-## OBJETIVO
+Si ustedes quieren reproducir la demo que vimos en la sesion, aqui tienen una secuencia simple, estable y facil de volver a contar dentro de su propio equipo.
 
-Estas demos estan pensadas para una sesion corporativa bajo el marco **DESARROLLO POTENCIADO POR DATOS**.
+El marco es este: no se trata de mostrar una IA aislada, sino de mostrar como los datos del trabajo real se convierten en decisiones y acciones.
 
-La idea no es demostrar "magia". La idea es demostrar tres cosas:
+## Mensaje central
 
-1. Que los datos operativos del ciclo de desarrollo pueden ponerse al servicio de mejores decisiones.
-2. Que GitHub Copilot acelera el trabajo tecnico cuando ya existe contexto.
-3. Que los MCP Servers conectan ese contexto real con el asistente.
+La historia que queremos contar es esta:
 
-## SUPUESTO DE DEMO
+1. El equipo ya tiene datos en Azure DevOps.
+2. MCP permite consultar ese contexto sin saltar manualmente entre varias vistas.
+3. Copilot ayuda a convertir ese contexto en comprension tecnica, pruebas y siguientes pasos.
 
-Supuesto recomendado:
+## Supuesto de demo
 
-- Entorno de demo en `Visual Studio Code`.
-- GitHub Copilot Chat activo.
-- Azure DevOps MCP Server disponible.
-- Proyecto de Azure DevOps preparado con:
-  - 1 iteracion activa.
-  - 3 a 5 work items reales o de demo.
-  - 1 PR abierto.
-  - 1 pipeline reciente con fallo o con warning.
-  - 1 archivo de codigo facil de explicar.
+La demo funciona mucho mejor si antes dejan listo:
 
-Nota operativa:
+- 1 iteracion activa
+- 3 a 5 work items visibles
+- 1 PR abierto
+- 1 PR completado
+- 1 pipeline reciente
+- 1 archivo de codigo facil de explicar
 
-- Segun Microsoft Learn, el Azure DevOps MCP Server permite consultar y actualizar work items, operar sobre PRs y pipelines, e inspeccionar logs de build.
-- Segun GitHub Docs, Copilot Chat en el IDE puede explicar codigo, generar pruebas y sugerir fixes.
-- Si usas el Azure DevOps MCP remoto, a abril de 2026 sigue en `public preview`, y Microsoft documenta como entornos soportados `Visual Studio Code` y `Visual Studio`.
+Si todavia no tienen ese entorno, armenlo con apoyo de:
 
-## CHECKLIST ANTES DE ENTRAR A LA SESION
+- [`azure_devops_demo_blueprint.md`](azure_devops_demo_blueprint.md)
+- [`paso_a_paso_ado_demo_detallado.md`](paso_a_paso_ado_demo_detallado.md)
 
-### 1. Checklist tecnico
+## Checklist antes de empezar
 
-- Validar que GitHub Copilot Chat abre sin pedir login.
-- Validar que el MCP Server aparece conectado.
-- Validar que la cuenta tenga acceso al proyecto correcto.
-- Validar que el repo de demo abre sin errores.
-- Validar que existe al menos un PR visible y una build reciente.
+### Tecnico
 
-### 2. Checklist funcional
+- Copilot abre sin pedir login inesperado
+- el servidor MCP aparece disponible
+- el repo correcto esta abierto
+- la cuenta tiene acceso al proyecto correcto
 
-- Tener identificados:
-  - el nombre del proyecto,
-  - la iteracion actual,
-  - un work item prioritario,
-  - un archivo de codigo relacionado,
-  - un PR o pipeline que puedas mencionar.
+### Funcional
 
-### 3. Checklist de riesgo
+- ya saben que work item van a mostrar
+- ya saben que PR o pipeline van a mencionar
+- ya tienen elegido el archivo de codigo para Copilot
 
-- No usar datos sensibles.
-- No usar nombres de clientes o incidentes delicados.
-- Evitar acciones de escritura en vivo, salvo que quieras mostrarlo de forma deliberada.
-- Preferir demo en modo consulta o `read-only`.
+### Riesgo
 
-## DEMO PRINCIPAL
+- no usan datos sensibles
+- no van a hacer escrituras accidentales
+- tienen capturas de respaldo por si algo falla
 
-## NOMBRE
+## Demo principal
 
-**DEL SPRINT A LA ACCION**
+### Nombre
 
-## DURACION
+`DEL SPRINT A LA ACCION`
+
+### Duracion sugerida
 
 8 a 10 minutos
 
-## MENSAJE CENTRAL
+### Secuencia
 
-No estamos mostrando una IA que "habla bonito". Estamos mostrando como un equipo puede pasar de datos operativos dispersos a una lectura accionable del trabajo y, desde ahi, acelerar la ejecucion tecnica.
+#### Paso 1. Leer el estado del sprint
 
-## SECUENCIA
+Prompt sugerido:
 
-### PASO 1. LEER EL ESTADO REAL DEL SPRINT
+```text
+Muestrame mis work items asignados en la iteracion actual y resume cuales estan en riesgo o bloqueados.
+```
 
-Que mostrar:
+Respaldo en ingles:
 
-- VS Code con Copilot Chat abierto.
-- El proyecto o workspace visible.
+```text
+Show my assigned work items.
+```
 
-Prompt sugerido en espanol:
+Resultado esperado:
 
-`Muestrame mis work items asignados en la iteracion actual y resume cuales estan en riesgo o bloqueados.`
+- lista de work items
+- algun item priorizado
+- una lectura rapida de riesgo o bloqueo
 
-Prompt de respaldo en ingles:
+Mensaje sugerido mientras corre:
 
-`Show my assigned work items.`
+"El valor aqui no es solo responder rapido. El valor es traer el estado real del trabajo sin obligarnos a navegar manualmente por varias pantallas."
 
-Que deberias esperar:
+#### Paso 2. Relacionar trabajo con entrega
 
-- Lista de work items.
-- Identificacion de items abiertos o con riesgo.
+Prompt sugerido:
 
-Que decir mientras se ejecuta:
+```text
+De esos work items, dime cuales tienen pull requests abiertos o pipelines recientes con fallo, y resume el principal riesgo de entrega.
+```
 
-"Aqui el valor no esta en que la herramienta responda rapido. El valor esta en que esta leyendo el estado real del trabajo y nos evita navegar manualmente por varias vistas para entender donde estamos."
+Alternativas:
 
-### PASO 2. RELACIONAR EL TRABAJO CON ENTREGA
+```text
+What pull requests require my review?
+List recent failed pipeline runs for this project and summarize the likely issue.
+```
 
-Prompt sugerido en espanol:
+Resultado esperado:
 
-`De esos work items, dime cuales tienen pull requests abiertos o pipelines recientes con fallo, y resume el principal riesgo de entrega.`
+- relacion entre backlog, PRs y pipelines
+- un riesgo tecnico o de entrega facil de explicar
 
-Prompt de respaldo en ingles:
+Mensaje sugerido:
 
-`What pull requests require my review?`
+"Aqui el dato deja de estar aislado. Ya no vemos backlog por un lado y delivery por otro; vemos la conexion entre ambos."
 
-Prompt opcional adicional:
+#### Paso 3. Bajar al nivel tecnico con Copilot
 
-`List recent failed pipeline runs for this project and summarize the likely issue.`
+Abrir un archivo relacionado y usar:
 
-Que deberias esperar:
+```text
+Explica este archivo y dime que parte impactaria el work item que acabamos de revisar.
+```
 
-- Relacion entre trabajo, PRs y pipelines.
-- Una lectura integrada del riesgo.
+Luego:
 
-Que decir mientras se ejecuta:
+```text
+Propone dos pruebas unitarias para cubrir el caso principal y un escenario borde.
+```
 
-"Este es el punto donde el dato empieza a volverse accionable. Ya no vemos backlog por un lado y delivery por otro; vemos la conexion entre ambos."
+Respaldo en ingles:
 
-### PASO 3. BAJAR AL NIVEL TECNICO CON COPILOT
+```text
+Explain this file.
+Write a unit test for this method.
+```
 
-Que mostrar:
+Resultado esperado:
 
-- Abrir un archivo relacionado con el item o PR.
+- resumen tecnico del archivo
+- sugerencia de impacto
+- ideas de pruebas
 
-Prompt sugerido en espanol:
+Mensaje sugerido:
 
-`Explica este archivo y dime que parte impactaria el work item que acabamos de revisar.`
+"Aqui Copilot no trabaja aislado. Toma el contexto tecnico y lo convierte en una accion concreta para el equipo: entender mejor el cambio y prepararlo mejor."
 
-Prompt de respaldo en ingles:
+#### Paso 4. Cerrar con vista ejecutiva
 
-`Explain this file.`
+Prompt sugerido:
 
-Segundo prompt sugerido:
+```text
+Resume en lenguaje ejecutivo el estado de esta funcionalidad, el riesgo principal y las tres acciones recomendadas para el equipo.
+```
 
-`Propone dos pruebas unitarias para cubrir el caso principal y un escenario borde.`
+Resultado esperado:
 
-Prompt de respaldo en ingles:
+- resumen claro
+- riesgo principal
+- siguientes pasos accionables
 
-`Write a unit test for this method.`
+Mensaje sugerido:
 
-Que deberias esperar:
+"Con esto cerramos el ciclo: dato operativo, interpretacion tecnica y una salida util para seguimiento y toma de decisiones."
 
-- Resumen funcional del archivo.
-- Sugerencias de pruebas o puntos de impacto.
+## Demo corta solo con Copilot
 
-Que decir mientras se ejecuta:
+### Cuando usarla
 
-"Aqui GitHub Copilot ya no trabaja aislado. Esta tomando el contexto tecnico y lo convierte en una accion concreta para el equipo: entender, probar y preparar mejor el cambio."
+- si MCP falla
+- si el tiempo se reduce
+- si la audiencia esta mas cargada a desarrollo
 
-### PASO 4. CERRAR CON VISTA EJECUTIVA
+### Secuencia
 
-Prompt sugerido en espanol:
+1. Abrir un archivo y pedir:
 
-`Resume en lenguaje ejecutivo el estado de esta funcionalidad, el riesgo principal y las tres acciones recomendadas para el equipo.`
+```text
+Explain this file.
+```
 
-Que deberias esperar:
+2. Pedir:
 
-- Un resumen claro.
-- Riesgo principal.
-- Siguientes pasos.
+```text
+How could I improve this code?
+```
 
-Que decir mientras se ejecuta:
+3. Seleccionar un metodo y pedir:
 
-"Con esto cerramos el ciclo: datos operativos, interpretacion tecnica y una salida util para coordinacion o seguimiento."
+```text
+Write a unit test for this method.
+```
 
-## DEMO SECUNDARIA
+4. Si tienen un PR visible:
 
-## NOMBRE
+```text
+Summarize the changes in this PR.
+```
 
-**COPILOT EN 5 MINUTOS**
+### Mensaje de negocio
 
-## CUANDO USARLA
+"Aunque aqui no estamos usando datos de Azure DevOps, si estamos viendo valor inmediato: menos tiempo de arranque, mejor comprension del codigo y mejor preparacion para revisar o probar."
 
-- Si el MCP Server no responde.
-- Si quieres una demo mas corta.
-- Si la audiencia esta mas cargada a desarrollo.
+## Demo corta solo con MCP
 
-## DURACION
+### Cuando usarla
 
-4 a 6 minutos
+- si quieren enfatizar visibilidad y seguimiento
+- si la audiencia tiene mas PMO, QA o liderazgo
 
-## SECUENCIA
+### Secuencia
 
-### PASO 1
+```text
+List the projects in my Azure DevOps organization.
+Show my assigned work items.
+What pull requests require my review?
+List recent failed pipeline runs for this project and summarize the likely issue.
+```
 
-Abrir un archivo del repo y pedir:
+### Mensaje de negocio
 
-`Explain this file.`
+"Esta demo no busca mostrar automatizacion por si sola. Busca mostrar que el dato operativo correcto, puesto en el momento correcto, mejora coordinacion, seguimiento y decision."
 
-### PASO 2
-
-Pedir:
-
-`How could I improve this code?`
-
-### PASO 3
-
-Seleccionar un metodo y pedir:
-
-`Write a unit test for this method.`
-
-### PASO 4
-
-Si tienes un PR abierto, pedir:
-
-`Summarize the changes in this PR.`
-
-## MENSAJE DE NEGOCIO
-
-"Aunque aqui no estamos usando datos de Azure DevOps, si estamos viendo valor practico inmediato: menos tiempo de arranque, mejor comprension del codigo y mejor preparacion para revisar o probar."
-
-## DEMO TERCIARIA
-
-## NOMBRE
-
-**MCP EN 5 MINUTOS**
-
-## CUANDO USARLA
-
-- Si quieres enfatizar el marco de datos.
-- Si la audiencia tiene mas PMO, QA, coordinacion o liderazgo.
-
-## DURACION
-
-4 a 6 minutos
-
-## SECUENCIA
-
-### PASO 1
-
-Prompt:
-
-`List the projects in my Azure DevOps organization.`
-
-### PASO 2
-
-Prompt:
-
-`Show my assigned work items.`
-
-### PASO 3
-
-Prompt:
-
-`What pull requests require my review?`
-
-### PASO 4
-
-Prompt:
-
-`List recent failed pipeline runs for this project and summarize the likely issue.`
-
-## MENSAJE DE NEGOCIO
-
-"Esta demo no busca mostrar automatizacion por si sola. Busca mostrar que el dato operativo correcto, puesto en el momento correcto, mejora seguimiento, decision y coordinacion."
-
-## DEMO RECOMENDADA SEGUN AUDIENCIA
-
-### Si ves mas lideres y PMO
-
-Usa:
-
-- Demo principal.
-- Enfatiza sprint, riesgo, PR, pipeline y resumen ejecutivo.
-
-### Si ves mas desarrollo y arquitectura
-
-Usa:
-
-- Demo principal o demo Copilot.
-- Enfatiza explicacion de codigo, pruebas y PR.
-
-### Si ves mas QA
-
-Usa:
-
-- Demo principal.
-- Enfatiza trazabilidad, pruebas y lectura de build o logs.
-
-## FRASES CORTAS PARA DECIR DURANTE LA DEMO
+## Frases utiles durante la demo
 
 - "Aqui no estamos reemplazando criterio; estamos reduciendo friccion."
 - "El valor no es solo responder, sino responder con contexto real."
@@ -288,86 +224,43 @@ Usa:
 - "La IA no cierra la decision; ayuda a prepararla mejor."
 - "El dato solo genera valor cuando se vuelve accion."
 
-## PROMPTS LISTOS PARA COPIAR
+## Plan B
 
-### PROMPTS DE CONTEXTO
+### Si falla MCP
 
-- `Muestrame mis work items asignados en la iteracion actual.`
-- `Resume cuales estan bloqueados o en riesgo.`
-- `What pull requests require my review?`
-- `List recent failed pipeline runs for this project.`
+Pasen a la demo corta de Copilot y expliquen:
 
-### PROMPTS TECNICOS
+"La integracion con contexto depende de autenticacion y permisos; por eso gobierno y configuracion tambien hacen parte del valor."
 
-- `Explain this file.`
-- `How could I improve this code?`
-- `Write a unit test for this method.`
-- `Explica este archivo y relaciona su impacto con el work item revisado.`
+### Si falla Copilot
 
-### PROMPTS DE CIERRE
+Concentrense en:
 
-- `Resume el principal riesgo de entrega en lenguaje ejecutivo.`
-- `Propone las tres acciones siguientes para el equipo.`
-- `Resume the changes in this PR.`
-- `Tell me why this job failed.`
+- work items
+- PR abierto
+- pipeline visible
+- cierre verbal con resumen ejecutivo
 
-## PLAN B SI FALLA LA DEMO
+### Si falla todo
 
-## ESCENARIO 1. FALLA EL LOGIN O LA CONEXION MCP
+Tengan listas 2 o 3 capturas:
 
-Que hacer:
+- sprint o backlog
+- PR
+- pipeline
 
-- Cambiar a la demo secundaria de Copilot.
-- Explicitar: "La integracion con contexto depende de autenticacion y permisos; por eso el gobierno importa tanto como la herramienta."
+## Que conviene evitar en vivo
 
-## ESCENARIO 2. EL MCP RESPONDE LENTO
+- datos sensibles
+- exceso de configuracion tecnica
+- instalaciones largas
+- cambios en produccion
+- demasiadas herramientas abiertas al mismo tiempo
 
-Que hacer:
+## Cierre recomendado
 
-- Tener 2 o 3 capturas listas.
-- Mostrar primero una salida ya preparada.
-- Luego repetir el prompt si hay tiempo.
+Despues de la demo, conecten siempre con estas ideas:
 
-## ESCENARIO 3. NO HAY PR O PIPELINE UTIL
-
-Que hacer:
-
-- Concentrarte en work items y explicacion de codigo.
-- Cerrar con una explicacion verbal del paso que habrias mostrado.
-
-## ESCENARIO 4. COPILOT RESPONDE ALGO FLOJO
-
-Que hacer:
-
-- Pedir una reformulacion mas concreta.
-- Ejemplo:
-  - `Se mas especifico. Quiero una respuesta breve, con riesgo principal y accion sugerida.`
-
-## QUE NO HACER EN VIVO
-
-- No improvisar con datos sensibles.
-- No mostrar demasiadas configuraciones tecnicas.
-- No entrar en instalacion paso a paso.
-- No abrir cinco herramientas distintas para probar un punto simple.
-- No dejar que la demo se vuelva una discusion de comandos.
-
-## ORDEN RECOMENDADO DURANTE LA CHARLA
-
-1. Explica el marco de datos.
-2. Muestra la demo principal.
-3. Vuelve a negocio:
-   - mejor visibilidad,
-   - mejor coordinacion,
-   - mejor preparacion de la accion.
-4. Cierra con riesgos y adopcion responsable.
-
-## FUENTES OFICIALES UTILIZADAS
-
-- GitHub Docs, "Asking GitHub Copilot questions in your IDE":
-  - https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide
-- GitHub Docs, "Getting started with prompts for Copilot Chat on GitHub":
-  - https://docs.github.com/en/copilot/how-tos/copilot-on-github/chat-with-copilot/get-started-with-chat
-- Microsoft Learn, "Manage Azure DevOps by using MCP Server":
-  - https://learn.microsoft.com/en-us/training/modules/manage-ado-mcp-server/
-- Microsoft Learn, "Set up the remote Azure DevOps MCP Server (preview)":
-  - https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops
+- mejor visibilidad del trabajo real
+- mejor conexion entre trabajo, codigo y entrega
+- mejor preparacion de la accion del equipo

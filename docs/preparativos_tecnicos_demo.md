@@ -1,239 +1,83 @@
-# PREPARATIVOS TECNICOS PARA LAS DEMOS
+# PREPARATIVOS TECNICOS
 
-## OBJETIVO
-
-Esta guia resume los preparativos tecnicos necesarios para:
-
-- quien va a presentar la demo,
-- quienes van a replicarla despues,
-- y el equipo administrador que debe dejar listo el entorno.
+Si ustedes quieren replicar la demo del taller, esta guia les resume la configuracion tecnica minima y la ruta recomendada para que el entorno funcione con la menor friccion posible.
 
 El foco es:
 
 - `GitHub Copilot` en `Visual Studio Code`
 - `Azure DevOps MCP Server`
 
-## RECOMENDACION PRACTICA
+## Recomendacion rapida
 
-Para una sesion de replicacion, la ruta mas simple hoy es:
+La ruta mas simple depende de sus cuentas:
 
-1. `Visual Studio Code`
-2. `GitHub Copilot Chat`
-3. `Azure DevOps MCP remoto`
+- Si su organizacion usa `Microsoft Entra ID` y el proyecto esta bien integrado, usen `Azure DevOps MCP remoto`.
+- Si esa ruta no esta lista o la autenticacion complica la sesion, usen `Azure DevOps MCP local`.
 
-La razon es simple:
+## Lo que necesita cada participante
 
-- el `MCP remoto` no requiere instalar un servidor local,
-- la configuracion es minima con `mcp.json`,
-- y Microsoft lo documenta oficialmente para `VS Code` y `Visual Studio`.
-
-Si no puedes usar el remoto, el plan B razonable es el `Azure DevOps MCP local`.
-
-## ESTADO DE SOPORTE A 17 DE ABRIL DE 2026
-
-- `Azure DevOps MCP remoto`: `public preview`
-- `Azure DevOps MCP local`: `generally available`
-- Entornos oficialmente soportados para el remoto: `Visual Studio Code` y `Visual Studio`
-
-## 1. PREPARATIVOS COMUNES PARA TODOS
-
-### Cada participante necesita
-
-- Un equipo con `Visual Studio Code` instalado.
-- Una cuenta de `GitHub` con acceso a un plan de `GitHub Copilot`.
-- Acceso al proyecto de `Azure DevOps` que se usara en la demo.
-- Permisos reales para ver:
-  - work items,
-  - repositorios,
-  - pull requests,
-  - pipelines,
-  - pruebas, si las van a mostrar.
-
-### Preparativos de cuentas
-
-- Confirmar que la cuenta que usaran en Azure DevOps pertenece al proyecto correcto.
-- Si van a usar `MCP remoto`, confirmar que la organizacion de Azure DevOps esta conectada a `Microsoft Entra ID`.
-- Confirmar que la identidad con la que inician sesion en Azure DevOps coincide con la que usaran para autenticar el MCP.
-
-## 2. PREPARATIVOS PARA TI COMO EXPOSITOR
-
-### Entorno recomendado
-
-- `Visual Studio Code` actualizado.
-- `GitHub Copilot` habilitado y probado antes de la sesion.
-- Un repositorio de demo ya abierto.
-- Un proyecto de Azure DevOps con:
-  - una iteracion activa,
-  - 3 a 5 work items visibles,
-  - 1 PR visible,
-  - 1 pipeline reciente,
-  - 1 archivo de codigo facil de explicar.
-
-### Lo que debes tener validado antes de entrar
-
-- Copilot abre sin pedir login.
-- El chat funciona.
-- El MCP responde una consulta simple.
-- El proyecto correcto aparece.
-- Los datos de demo no son sensibles.
-
-## 3. PREPARATIVOS PARA QUIENES VAN A REPLICAR
-
-### Minimo indispensable
-
-- `VS Code`
-- acceso a `GitHub Copilot`
+- `Visual Studio Code`
+- una cuenta de `GitHub` con acceso a `GitHub Copilot`
 - acceso al proyecto de `Azure DevOps`
+- permisos de lectura sobre:
+  - work items
+  - repositorios
+  - pull requests
+  - pipelines
+  - pruebas, si las van a consultar
 
-### Muy recomendable
+## Antes de empezar
 
-- usar el mismo proyecto de demo o un proyecto sandbox,
-- tener un repositorio propio o clonado,
-- tener una cuenta de Entra activa si van a usar `MCP remoto`,
-- hacer la prueba en una red corporativa que no bloquee autenticacion.
+Verifiquen estas tres cosas:
 
-## 4. CONFIGURACION DE GITHUB COPILOT EN VS CODE
+1. La cuenta de `GitHub` es la misma con la que van a usar Copilot en VS Code.
+2. La cuenta de `Azure DevOps` tiene acceso real al proyecto de demo.
+3. Si van a usar `MCP remoto`, la autenticacion se hara con una cuenta organizacional o invitada en `Microsoft Entra ID`.
 
-## Paso 1. Verificar acceso a Copilot
+## Ruta 1. GitHub Copilot en VS Code
 
-Cada persona debe tener uno de estos escenarios:
-
-- plan individual con Copilot, o
-- licencia asignada por la organizacion o la empresa.
-
-## Paso 2. Iniciar sesion en VS Code
+### Paso 1. Iniciar sesion
 
 En `Visual Studio Code`:
 
-1. Abrir `Accounts`.
-2. Iniciar sesion con `GitHub`.
-3. Confirmar que la cuenta es la correcta para usar Copilot.
+1. Abran `Accounts`.
+2. Inicien sesion con su cuenta de `GitHub`.
+3. Confirmen que esa cuenta tiene Copilot habilitado.
 
-## Paso 3. Confirmar que Copilot esta activo
+### Paso 2. Confirmar que Copilot funciona
 
-Abrir el chat de Copilot en VS Code y probar algo simple:
+Abrir el chat de Copilot y probar algo corto:
 
-`Explain this file.`
-
-Si responde, Copilot ya esta funcional.
-
-## Nota importante
-
-GitHub documenta que, en `Visual Studio Code`, cuando configuras Copilot por primera vez, las extensiones necesarias se instalan automaticamente.
-
-## 5. CONFIGURACION RECOMENDADA: AZURE DEVOPS MCP REMOTO
-
-## Cuando conviene usarlo
-
-Usalo si:
-
-- quieres la ruta mas simple para una capacitacion,
-- la organizacion de Azure DevOps esta conectada a `Microsoft Entra ID`,
-- y quieres evitar instalar un servidor local en cada equipo.
-
-## Prerrequisitos oficiales
-
-Segun Microsoft:
-
-- organizacion activa de Azure DevOps conectada a Entra,
-- pertenencia al proyecto,
-- acceso a los recursos a consultar,
-- entorno soportado como `Visual Studio Code`.
-
-## Paso 1. Crear el archivo de configuracion
-
-En el repositorio o carpeta de trabajo, crear:
-
-`.vscode/mcp.json`
-
-Con este contenido:
-
-```json
-{
-  "servers": {
-    "ado-remote-mcp": {
-      "url": "https://mcp.dev.azure.com/{organization}",
-      "type": "http"
-    }
-  },
-  "inputs": []
-}
+```text
+Explain this file.
 ```
 
-Reemplaza `{organization}` por el nombre real de la organizacion de Azure DevOps.
+Si responde con una explicacion razonable, Copilot ya esta listo.
 
-Ejemplo:
+## Ruta 2. Azure DevOps MCP remoto
 
-```json
-{
-  "servers": {
-    "ado-remote-mcp": {
-      "url": "https://mcp.dev.azure.com/contoso",
-      "type": "http"
-    }
-  },
-  "inputs": []
-}
-```
+### Cuando conviene
 
-## Paso 2. Abrir Copilot en VS Code
+Usen esta opcion si:
 
-1. Guardar el archivo.
-2. Abrir `GitHub Copilot Chat`.
-3. Cuando lo solicite, autenticarse con la cuenta `Microsoft Entra`.
-4. Elegir la cuenta que tiene acceso al proyecto.
+- quieren la configuracion mas corta para el taller
+- su organizacion ya esta conectada a `Microsoft Entra ID`
+- la cuenta que van a usar tiene acceso al proyecto
 
-## Paso 3. Validar que el MCP responde
+### Advertencia importante
 
-Probar con alguno de estos prompts:
+Si intentan autenticarse con una cuenta personal de Microsoft que no ha sido invitada al tenant, el login puede fallar. Para esta ruta conviene usar:
 
-- `List the projects in my Azure DevOps organization.`
-- `Show my assigned work items.`
-- `What pull requests require my review?`
+- cuenta corporativa, o
+- cuenta invitada al tenant correspondiente
 
-Si devuelve datos reales, ya esta listo.
+### Paso 1. Crear `.vscode/mcp.json`
 
-## Configuracion recomendada para capacitacion
+Pueden tomar como base:
 
-Si quieres limitar el alcance y simplificar la demo, Microsoft documenta estas dos opciones:
+- [`../templates/mcp.remote.example.json`](../templates/mcp.remote.example.json)
 
-### A. Restringir toolsets
-
-```json
-{
-  "servers": {
-    "ado-remote-mcp": {
-      "url": "https://mcp.dev.azure.com/{organization}",
-      "type": "http",
-      "headers": {
-        "X-MCP-Toolsets": "repos,wiki,wit,pipelines,testplan"
-      }
-    }
-  },
-  "inputs": []
-}
-```
-
-### B. Forzar modo solo lectura
-
-```json
-{
-  "servers": {
-    "ado-remote-mcp": {
-      "url": "https://mcp.dev.azure.com/{organization}",
-      "type": "http",
-      "headers": {
-        "X-MCP-Readonly": "true"
-      }
-    }
-  },
-  "inputs": []
-}
-```
-
-### C. Recomendacion combinada para taller
-
-Si quieres el montaje mas seguro para una demo:
+Configuracion recomendada para taller:
 
 ```json
 {
@@ -251,33 +95,48 @@ Si quieres el montaje mas seguro para una demo:
 }
 ```
 
-Esta configuracion es ideal para replicacion:
+Reemplacen `{organization}` por el nombre real de su organizacion.
 
-- baja riesgo,
-- evita modificaciones accidentales,
-- reduce el numero de herramientas cargadas.
+### Paso 2. Recargar VS Code
 
-## 6. CONFIGURACION ALTERNATIVA: AZURE DEVOPS MCP LOCAL
+1. Guarden el archivo.
+2. Ejecuten `Developer: Reload Window`.
+3. Abran `GitHub Copilot Chat`.
 
-## Cuando conviene usarlo
+### Paso 3. Entrar a Agent Mode
 
-Usalo si:
+Para usar MCP con Copilot:
 
-- no puedes usar el remoto,
-- quieres un entorno mas controlado,
-- o tu organizacion todavia no tiene lista la ruta con Entra para el remoto.
+1. Cambien el chat de `Ask` a `Agent`.
+2. Entren a `Tools`.
+3. Verifiquen que el servidor MCP aparezca disponible.
 
-## Prerrequisitos oficiales
+### Paso 4. Validar
 
-Segun Microsoft Learn y el repositorio oficial:
+Prueben en este orden:
 
-- `VS Code`
-- `Node.js 20+`
-- carpeta o repo abierto en VS Code
+```text
+List the projects in my Azure DevOps organization.
+Show my assigned work items.
+What pull requests require my review?
+List recent failed pipeline runs for this project.
+```
 
-## Paso 1. Instalar Node.js
+Si estas consultas devuelven datos reales, la configuracion quedo bien.
 
-Cada participante debe instalar `Node.js 20` o superior.
+## Ruta 3. Azure DevOps MCP local
+
+### Cuando conviene
+
+Usen esta opcion si:
+
+- el remoto no esta disponible
+- la autenticacion con Entra no esta lista
+- quieren un entorno mas controlado para laboratorio
+
+### Paso 1. Instalar Node.js
+
+Necesitan `Node.js 20+`.
 
 Verificacion:
 
@@ -286,9 +145,13 @@ node --version
 npx --version
 ```
 
-## Paso 2. Crear `.vscode/mcp.json`
+### Paso 2. Crear `.vscode/mcp.json`
 
-Usa esta configuracion recomendada por el repositorio oficial:
+Pueden tomar como base:
+
+- [`../templates/mcp.local.example.json`](../templates/mcp.local.example.json)
+
+Configuracion minima:
 
 ```json
 {
@@ -309,205 +172,116 @@ Usa esta configuracion recomendada por el repositorio oficial:
 }
 ```
 
-## Paso 3. Iniciar el servidor
+### Paso 3. Iniciar el servidor
 
-1. Guardar el archivo.
-2. Hacer clic en `Start` sobre la configuracion MCP.
-3. Abrir `GitHub Copilot Chat`.
-4. Cambiar a `Agent Mode`.
-5. Ir a `Select Tools`.
-6. Habilitar las herramientas MCP disponibles.
+1. Guarden el archivo.
+2. Recarguen la ventana de VS Code.
+3. Abran `GitHub Copilot Chat`.
+4. Cambien a `Agent`.
+5. Activen las tools del servidor MCP.
 
-## Paso 4. Autenticarse
+### Paso 4. Autenticarse
 
-La primera vez que se ejecute una herramienta de Azure DevOps:
+La primera vez que una tool intente consultar Azure DevOps:
 
-- se abrira el navegador,
-- pedira login con cuenta Microsoft,
-- y esa cuenta debe coincidir con la organizacion de Azure DevOps seleccionada.
+- se abrira el navegador
+- se pedira autenticacion
+- la cuenta debe coincidir con la organizacion del proyecto
 
-## Paso 5. Validar
+### Paso 5. Validar
 
-Probar:
+Pueden probar:
 
-`List ADO projects`
-
-o:
-
-`List my work items for project 'Contoso'`
-
-## Opcional: cargar solo ciertos dominios
-
-Si quieres simplificar la experiencia, el repositorio oficial recomienda usar `domains`.
-
-Ejemplo:
-
-```json
-{
-  "inputs": [
-    {
-      "id": "ado_org",
-      "type": "promptString",
-      "description": "Azure DevOps organization name (e.g. 'contoso')"
-    }
-  ],
-  "servers": {
-    "ado_with_filtered_domains": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@azure-devops/mcp", "${input:ado_org}", "-d", "core", "work", "work-items", "repositories", "pipelines"]
-    }
-  }
-}
+```text
+List ADO projects
+Show my assigned work items.
 ```
 
-Dominios disponibles segun el repositorio:
+## Configuracion minima del proyecto de demo
 
-- `core`
-- `work`
-- `work-items`
-- `search`
-- `test-plans`
-- `repositories`
-- `wiki`
-- `pipelines`
-- `advanced-security`
+Para que la replicacion funcione, el proyecto de Azure DevOps deberia tener al menos:
 
-## Recomendacion para un taller
+- una iteracion activa
+- work items visibles
+- un repo con codigo
+- un PR visible
+- una pipeline reciente
 
-Usa solo:
+La estructura sugerida esta en:
 
-- `core`
-- `work`
-- `work-items`
-- `repositories`
-- `pipelines`
+- [`azure_devops_demo_blueprint.md`](azure_devops_demo_blueprint.md)
 
-Asi reduces ruido y facilitas la replicacion.
+## Validacion rapida del entorno
 
-## 7. CONFIGURACION MINIMA DEL PROYECTO DE DEMO
+Cada participante deberia poder completar estas cuatro pruebas:
 
-Para que la demo sea replicable, el proyecto de Azure DevOps debe tener al menos:
+1. Copilot:
 
-- una organizacion accesible,
-- un proyecto visible para los participantes,
-- una iteracion activa,
-- work items asignables,
-- un repo con codigo,
-- un PR visible,
-- una pipeline reciente.
+```text
+Explain this file.
+```
 
-Si quieres mostrar QA:
+2. Work items:
 
-- test plan o resultados de pruebas visibles.
+```text
+Show my assigned work items.
+```
 
-## 8. CONFIGURACION DE PERMISOS
+3. Pull requests:
 
-## Para exponer la demo
+```text
+What pull requests require my review?
+```
 
-Con acceso de lectura suele bastar si la demo es de consulta.
+4. Pipelines:
 
-## Para replicar la demo
+```text
+List recent failed pipeline runs for this project.
+```
 
-Necesitan como minimo:
+Si esas cuatro pruebas funcionan, el entorno ya esta listo para la demo principal.
 
-- acceso al proyecto,
-- acceso al repo,
-- acceso a work items,
-- acceso a PRs,
-- acceso a pipelines,
-- acceso a pruebas, si las van a consultar.
+## Problemas comunes
 
-## Recomendacion
+### Copilot no responde
 
-Para capacitacion, usa:
+Revisen:
 
-- proyecto sandbox,
-- permisos de lectura,
-- y `readonly` en remoto si es posible.
+- sesion iniciada en GitHub
+- licencia activa
+- politica corporativa que permita Copilot Chat
 
-## 9. VALIDACION RAPIDA POST-CONFIGURACION
+### El MCP remoto no devuelve datos
 
-Cada participante deberia poder ejecutar estas cuatro pruebas:
+Revisen:
 
-### Prueba 1. Copilot
+- nombre correcto de la organizacion en la URL
+- permisos sobre el proyecto
+- cuenta correcta en `Microsoft Entra ID`
 
-`Explain this file.`
+### El MCP local no arranca
 
-### Prueba 2. MCP
+Revisen:
 
-`Show my assigned work items.`
+- `Node.js 20+`
+- contenido de `.vscode/mcp.json`
+- disponibilidad de `npx`
+- que el servidor aparezca en `Tools`
 
-### Prueba 3. PRs
+### Copilot responde como chat normal y no usa tools
 
-`What pull requests require my review?`
+Revisen:
 
-### Prueba 4. Pipelines
+- que el chat este en `Agent`
+- que las tools del MCP esten habilitadas
+- que el servidor haya cargado sin errores
 
-`List recent failed pipeline runs for this project.`
+## Recomendacion final
 
-Si esas cuatro funcionan, el entorno esta listo para la demo principal.
+Para un taller, conviene priorizar estabilidad sobre sofisticacion:
 
-## 10. PROBLEMAS MAS COMUNES
-
-### Problema 1. Copilot no responde
-
-Revisar:
-
-- licencia o plan activo,
-- sesion iniciada en GitHub,
-- politica organizacional que permita chat.
-
-### Problema 2. MCP remoto no devuelve datos
-
-Revisar:
-
-- que la organizacion de Azure DevOps este conectada a Entra,
-- que la cuenta tenga permisos,
-- que el nombre de la organizacion en la URL sea correcto.
-
-### Problema 3. MCP local no arranca
-
-Revisar:
-
-- `Node.js 20+`,
-- archivo `.vscode/mcp.json`,
-- si `npx` esta disponible,
-- si VS Code detecto la configuracion MCP.
-
-### Problema 4. Se autentica con la cuenta equivocada
-
-Revisar:
-
-- cerrar sesion del navegador si hay multiples cuentas,
-- repetir autenticacion con la cuenta que corresponde a Azure DevOps.
-
-## 11. RECOMENDACION FINAL DE MONTAJE
-
-Si tu objetivo es una demo en cliente y luego replicacion por participantes:
-
-### Para ti como expositor
-
-- usa `MCP remoto` en `VS Code`,
-- con `readonly`,
-- y con toolsets limitados.
-
-### Para participantes
-
-- si tienen Entra y acceso al proyecto, usa tambien `MCP remoto`,
-- si no lo tienen listo, usa la ruta de `Copilot` sola o `MCP local` como fase dos.
-
-## 12. FUENTES OFICIALES
-
-- GitHub Docs, `What is GitHub Copilot?`
-  - https://docs.github.com/en/copilot/overview-of-github-copilot/about-github-copilot
-- GitHub Docs, `Installing the GitHub Copilot extension in your environment`
-  - https://docs.github.com/en/copilot/how-tos/personal-settings/installing-the-github-copilot-extension-in-your-environment
-- GitHub Docs, `Asking GitHub Copilot questions in your IDE`
-  - https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide
-- Microsoft Learn, `Set up the remote Azure DevOps MCP Server (preview)`
-  - https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops
-- Microsoft Learn, `Manage Azure DevOps by using MCP Server`
-  - https://learn.microsoft.com/en-us/training/modules/manage-ado-mcp-server/
-- Repositorio oficial Microsoft, `azure-devops-mcp`
-  - https://github.com/microsoft/azure-devops-mcp
+- `read-only` en el remoto
+- toolsets limitados
+- proyecto sandbox
+- datos no sensibles
+- prompts ya probados antes de la sesion

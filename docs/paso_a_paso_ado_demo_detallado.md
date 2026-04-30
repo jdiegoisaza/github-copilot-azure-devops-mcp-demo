@@ -1,14 +1,14 @@
 # PASO A PASO DETALLADO
 
-## MONTAJE DEL PROYECTO Y PREPARACION DE LA DEMO
+Esta guia les sirve para replicar el entorno de demo del taller y dejar listo un escenario funcional de:
 
-Esta guia esta pensada para que montes un proyecto demo en `Azure DevOps` y luego dejes listas las demos de:
+- GitHub Copilot
+- Azure DevOps MCP Server
+- Azure DevOps con backlog, repo, PRs y pipeline
 
-- `GitHub Copilot`
-- `Azure DevOps MCP Server`
-- narrativa de `Desarrollo Potenciado por Datos`
+La pueden seguir tal cual o adaptar nombres y artefactos a su propia organizacion.
 
-Te la dejo en el orden mas util:
+## Orden recomendado
 
 1. Preparativos previos
 2. Crear el proyecto en Azure DevOps
@@ -18,141 +18,99 @@ Te la dejo en el orden mas util:
 6. Importar backlog
 7. Crear pipeline
 8. Crear ramas y pull requests
-9. Configurar politicas de rama
-10. Opcional: crear test plan
-11. Preparar la demo tecnica
-12. Ensayar y validar
+9. Configurar branch policies
+10. Opcional: preparar test plan
+11. Configurar Copilot y MCP
+12. Ensayar la demo
 
-## ARCHIVOS QUE YA TIENES EN ESTE WORKSPACE
+## Archivos de apoyo en este repositorio
 
-Puedes apoyarte en estos archivos ya creados:
+- Blueprint del proyecto:
+  - [`azure_devops_demo_blueprint.md`](azure_devops_demo_blueprint.md)
+- Backlog para importar:
+  - [`../templates/azure_devops_workitems_demo.csv`](../templates/azure_devops_workitems_demo.csv)
+- Backlog alternativo sin rutas:
+  - [`../templates/azure_devops_workitems_demo_sin_rutas.csv`](../templates/azure_devops_workitems_demo_sin_rutas.csv)
+- Pipeline base:
+  - [`../pipelines/azure-pipelines.yml`](../pipelines/azure-pipelines.yml)
+- Script opcional:
+  - [`../scripts/crear_proyecto_ado_demo.ps1`](../scripts/crear_proyecto_ado_demo.ps1)
+- Preparativos tecnicos:
+  - [`preparativos_tecnicos_demo.md`](preparativos_tecnicos_demo.md)
+- Guion de demo:
+  - [`demos_en_vivo.md`](demos_en_vivo.md)
 
-- [azure_devops_demo_blueprint.md](</C:/Users/juand/OneDrive/Documentos/Codex/AI aplicada a equipos de desarrollo/azure_devops_demo_blueprint.md>)
-- [azure_devops_workitems_demo.csv](</C:/Users/juand/OneDrive/Documentos/Codex/AI aplicada a equipos de desarrollo/azure_devops_workitems_demo.csv>)
-- [azure-pipelines-demo.yml](</C:/Users/juand/OneDrive/Documentos/Codex/AI aplicada a equipos de desarrollo/azure-pipelines-demo.yml>)
-- [crear_proyecto_ado_demo.ps1](</C:/Users/juand/OneDrive/Documentos/Codex/AI aplicada a equipos de desarrollo/crear_proyecto_ado_demo.ps1>)
-- [demos_en_vivo.md](</C:/Users/juand/OneDrive/Documentos/Codex/AI aplicada a equipos de desarrollo/demos_en_vivo.md>)
-- [preparativos_tecnicos_demo.md](</C:/Users/juand/OneDrive/Documentos/Codex/AI aplicada a equipos de desarrollo/preparativos_tecnicos_demo.md>)
+## 1. Preparativos previos
 
-## 1. PREPARATIVOS PREVIOS
+Antes de tocar Azure DevOps, revisen esto:
 
-Antes de tocar Azure DevOps, confirma esto:
+### Permisos minimos
 
-### 1.1 Permisos necesarios
+Idealmente deberian poder:
 
-Debes tener:
+- crear proyecto o recibirlo ya creado
+- crear repositorio
+- crear pipeline
+- crear work items
+- crear PRs
+- configurar branch policies
 
-- permiso para crear proyectos, o
-- que alguien de TI/Plataforma te cree el proyecto base.
+### Configuracion recomendada
 
-Ademas, para trabajar tranquilo, conviene tener:
-
-- permiso para crear repositorios,
-- permiso para crear pipelines,
-- permiso para crear work items,
-- permiso para configurar branch policies.
-
-### 1.2 Nombre recomendado del proyecto
-
-Usa:
-
-- `DESARROLLO-CON-DATOS`
-
-### 1.3 Configuracion recomendada
-
+- Nombre del proyecto: `DESARROLLO-CON-DATOS`
 - Visibilidad: `Private`
 - Source control: `Git`
 - Process: `Agile`
 
-### 1.4 Que vas a montar
+### Nota importante sobre el proceso
 
-La version mas estable para demo es:
+El material de ejemplo usa:
 
-- 1 proyecto
-- 1 repositorio principal
-- 1 sprint activo
-- 1 pipeline
-- 1 PR abierto
-- 1 PR completado
-- backlog corto y conectado
+- `Feature`
+- `User Story`
+- `Bug`
 
-## 2. CREAR EL PROYECTO EN AZURE DEVOPS
+Si crean el proyecto con `Basic`, la importacion del CSV puede fallar. Para esta demo usen `Agile`.
 
-## Ruta por interfaz web
+## 2. Crear el proyecto en Azure DevOps
 
-### Paso 2.1
+### Opcion por interfaz
 
-Abre tu organizacion de Azure DevOps:
+1. Entren a:
 
-`https://dev.azure.com/TU_ORGANIZACION`
+```text
+https://dev.azure.com/TU_ORGANIZACION
+```
 
-### Paso 2.2
+2. Seleccionen `New project`.
+3. Completen:
+   - Name: `DESARROLLO-CON-DATOS`
+   - Description: `Proyecto demo para Desarrollo Potenciado por Datos`
+   - Visibility: `Private`
+   - Version control: `Git`
+   - Work item process: `Agile`
+4. Seleccionen `Create`.
 
-En la pagina principal de proyectos:
+### Opcion por script
 
-- haz clic en `New project`
+Si prefieren apoyarse en CLI:
 
-### Paso 2.3
+1. Abran [`../scripts/crear_proyecto_ado_demo.ps1`](../scripts/crear_proyecto_ado_demo.ps1).
+2. Reemplacen el nombre de la organizacion.
+3. Ejecuten el script con Azure CLI autenticado.
 
-Completa el formulario:
+## 3. Crear areas e iteraciones
 
-- Name: `DESARROLLO-CON-DATOS`
-- Description: `Proyecto demo para Desarrollo Potenciado por Datos`
-- Visibility: `Private`
-- Advanced > Version control: `Git`
-- Advanced > Work item process: `Agile`
+### Areas sugeridas
 
-### Paso 2.4
-
-Haz clic en `Create`
-
-### Resultado esperado
-
-Debes quedar dentro del nuevo proyecto, con el menu lateral de:
-
-- Boards
-- Repos
-- Pipelines
-- Test Plans
-
-## Ruta opcional por script
-
-Si prefieres hacerlo por script:
-
-1. Abre [crear_proyecto_ado_demo.ps1](</C:/Users/juand/OneDrive/Documentos/Codex/AI aplicada a equipos de desarrollo/crear_proyecto_ado_demo.ps1>)
-2. Reemplaza:
-   - `TU_ORGANIZACION`
-3. Ejecutalo en PowerShell con Azure CLI autenticado
-
-## 3. CREAR AREAS E ITERACIONES
-
-## 3.1 Crear areas
-
-### Paso 3.1.1
-
-Dentro del proyecto:
-
-- ve a `Project settings`
-
-### Paso 3.1.2
-
-En el panel izquierdo:
-
-- entra a `Project configuration`
-- selecciona `Areas`
-
-### Paso 3.1.3
-
-Sobre el nodo raiz del proyecto, crea estos nodos hijos:
+En `Project settings > Project configuration > Areas`, creen:
 
 - `Producto`
 - `Backend`
 - `Frontend`
 - `QA`
 
-### Resultado esperado
-
-Debes ver algo como:
+Resultado esperado:
 
 ```text
 DESARROLLO-CON-DATOS
@@ -162,32 +120,17 @@ DESARROLLO-CON-DATOS
   QA
 ```
 
-## 3.2 Crear iteraciones
+### Iteraciones sugeridas
 
-### Paso 3.2.1
-
-En `Project settings > Project configuration`:
-
-- entra a `Iterations`
-
-### Paso 3.2.2
-
-Sobre el nodo raiz, crea:
+En `Project settings > Project configuration > Iterations`, creen:
 
 - `Release 1`
-
-### Paso 3.2.3
-
-Dentro de `Release 1`, crea:
-
 - `Sprint 0 - Setup`
 - `Sprint 1 - Desarrollo`
 - `Sprint 2 - Integracion`
 - `Sprint 3 - Pruebas`
 
-### Resultado esperado
-
-Debes ver:
+Resultado esperado:
 
 ```text
 DESARROLLO-CON-DATOS
@@ -198,58 +141,19 @@ DESARROLLO-CON-DATOS
     Sprint 3 - Pruebas
 ```
 
-### Paso 3.2.4
+Para la demo, dejen `Sprint 1 - Desarrollo` como sprint principal.
 
-Si Azure DevOps te deja definir fechas de sprint, configura:
+## 4. Crear el repositorio
 
-- Sprint 0: semana previa
-- Sprint 1: actual
-- Sprint 2: siguiente
-- Sprint 3: siguiente
-
-### Recomendacion
-
-Deja `Sprint 1 - Desarrollo` como el sprint principal de la demo.
-
-## 4. CREAR EL REPOSITORIO
-
-## 4.1 Crear repo por interfaz
-
-### Paso 4.1.1
-
-Ve a:
-
-- `Repos`
-
-### Paso 4.1.2
-
-Si es el primer repo, Azure DevOps te puede mostrar la opcion para inicializarlo.
-
-Si no, usa el selector de repositorios y elige:
-
-- `New repository`
-
-### Paso 4.1.3
-
-Nombre del repo:
+En `Repos`, creen o inicialicen este repo:
 
 - `portal-servicios-demo`
 
-### Paso 4.1.4
+Si Azure DevOps lo permite, creenlo con `README`.
 
-Si te da la opcion, crea el repo con `README`
+## 5. Subir contenido base
 
-### Resultado esperado
-
-Debes tener un repo vacio o casi vacio, con rama:
-
-- `main`
-
-## 5. SUBIR CONTENIDO BASE AL REPO
-
-## 5.1 Estructura recomendada
-
-En tu maquina local crea una carpeta con esta estructura:
+### Estructura sugerida
 
 ```text
 portal-servicios-demo/
@@ -263,98 +167,46 @@ portal-servicios-demo/
   azure-pipelines.yml
 ```
 
-### Paso 5.1.1
+### Que conviene agregar
 
-Copia el pipeline base:
+- el pipeline base de [`../pipelines/azure-pipelines.yml`](../pipelines/azure-pipelines.yml)
+- un `README.md` simple
+- uno o dos archivos de codigo faciles de explicar
+- una carpeta de pruebas
 
-- toma [azure-pipelines-demo.yml](</C:/Users/juand/OneDrive/Documentos/Codex/AI aplicada a equipos de desarrollo/azure-pipelines-demo.yml>)
-- guárdalo en el repo como:
-  - `azure-pipelines.yml`
-
-### Paso 5.1.2
-
-Crea un `README.md` con algo simple como:
-
-```md
-# portal-servicios-demo
-
-Repositorio demo para Desarrollo Potenciado por Datos.
-```
-
-### Paso 5.1.3
-
-Agrega uno o dos archivos de codigo faciles de explicar.
-
-Ejemplo:
+### Ejemplo de archivos utiles para la demo
 
 - `src/api/requestsService.js`
 - `src/web/requestsPage.js`
 - `tests/unit/requestsService.test.js`
 
-No tienen que ser complejos. La demo gana mas por claridad que por sofisticacion.
+No tienen que ser complejos. Para el taller funciona mejor algo claro que algo demasiado sofisticado.
 
-## 5.2 Subir el repo a Azure DevOps
+## 6. Importar el backlog
 
-### Opcion GUI
+### Opcion principal
 
-Puedes clonar el repo y subirlo desde VS Code.
+En `Boards > Queries`, usen `Import work items` y carguen:
 
-### Opcion Git por terminal
+- [`../templates/azure_devops_workitems_demo.csv`](../templates/azure_devops_workitems_demo.csv)
 
-En la carpeta local del repo:
+### Si falla por rutas
 
-```powershell
-git init
-git add .
-git commit -m "chore: estructura base de demo"
-git branch -m main
-git remote add origin https://dev.azure.com/TU_ORGANIZACION/DESARROLLO-CON-DATOS/_git/portal-servicios-demo
-git push -u origin main
-```
+Usen esta variante:
 
-### Resultado esperado
+- [`../templates/azure_devops_workitems_demo_sin_rutas.csv`](../templates/azure_devops_workitems_demo_sin_rutas.csv)
 
-En `Repos > Files` debes ver:
+Luego pueden asignar `Area Path` e `Iteration Path` desde la interfaz.
 
-- `README.md`
-- `azure-pipelines.yml`
-- carpetas `src`, `tests`, `docs`
+### Si falla por tipos de work item
 
-## 6. IMPORTAR EL BACKLOG
+Revisen que el proyecto este en `Agile`. Si esta en `Basic`, el CSV no va a reconocer correctamente:
 
-## 6.1 Importar por CSV
+- `Feature`
+- `User Story`
+- `Bug`
 
-### Paso 6.1.1
-
-Ve a:
-
-- `Boards`
-
-### Paso 6.1.2
-
-Abre:
-
-- `Queries`
-
-### Paso 6.1.3
-
-Busca la opcion:
-
-- `Import work items`
-
-### Paso 6.1.4
-
-Sube este archivo:
-
-- [azure_devops_workitems_demo.csv](</C:/Users/juand/OneDrive/Documentos/Codex/AI aplicada a equipos de desarrollo/azure_devops_workitems_demo.csv>)
-
-### Paso 6.1.5
-
-Confirma la importacion
-
-### Resultado esperado
-
-Debes tener:
+### Estructura esperada despues de importar
 
 - 1 Epic
 - 2 Features
@@ -362,515 +214,180 @@ Debes tener:
 - 6 Tasks
 - 2 Bugs
 
-## 6.2 Crear relaciones entre items
+## 7. Crear relaciones entre work items
 
-El CSV que te dejé crea los work items, pero normalmente la jerarquia padre-hijo conviene terminarla a mano para la demo.
+La importacion por CSV acelera la carga, pero conviene terminar la jerarquia a mano para que la demo quede mas clara.
 
-### Paso 6.2.1
+Relacion sugerida:
 
-Abre el Epic:
-
-- `Portal de servicios internos basado en datos`
-
-### Paso 6.2.2
-
-En la seccion de links o relaciones:
-
-- agrega como `Child` estas dos Features:
+- Epic:
+  - `Portal de servicios internos basado en datos`
+- Features hijas:
   - `Consulta y seguimiento de solicitudes`
   - `Alertas y visibilidad operativa`
+- User Stories hijas de las Features correspondientes
+- Tasks hijas de las User Stories
+- Bugs relacionados con la User Story afectada
 
-### Paso 6.2.3
+Recomendacion practica:
 
-Abre la Feature `Consulta y seguimiento de solicitudes`
+- usen `Child` para la jerarquia principal
+- usen `Related` para los bugs
 
-Agrega como `Child`:
+## 8. Ajustar estado y asignaciones
 
-- `Como analista quiero consultar solicitudes activas para priorizar atencion`
-- `Como usuario quiero ver el detalle de una solicitud con su estado actual`
+Para que la demo se vea viva, dejen por ejemplo:
 
-### Paso 6.2.4
+- 1 User Story en `New`
+- 1 User Story en `Active`
+- 1 Task en `Closed`
+- 1 Bug en `Active`
 
-Abre la Feature `Alertas y visibilidad operativa`
+Y asignen al menos algunos items a un usuario real. Eso mejora mucho consultas como:
 
-Agrega como `Child`:
+```text
+Show my assigned work items.
+```
 
-- `Como coordinador quiero ver solicitudes en riesgo para anticipar bloqueos`
-- `Como lider quiero contar con un resumen ejecutivo del estado operativo`
+## 9. Crear la pipeline
 
-### Paso 6.2.5
+En `Pipelines > New pipeline`:
 
-Abre la User Story:
-
-- `Como analista quiero consultar solicitudes activas para priorizar atencion`
-
-Agrega como `Child`:
-
-- `Crear endpoint para listar solicitudes`
-- `Agregar filtro por estado y prioridad`
-- `Agregar pruebas unitarias del endpoint`
-
-### Paso 6.2.6
-
-Abre la User Story:
-
-- `Como usuario quiero ver el detalle de una solicitud con su estado actual`
-
-Agrega como `Child`:
-
-- `Construir vista web de consulta`
-
-### Paso 6.2.7
-
-Abre la User Story:
-
-- `Como coordinador quiero ver solicitudes en riesgo para anticipar bloqueos`
-
-Agrega como `Child`:
-
-- `Crear servicio de resumen de riesgo`
-
-### Paso 6.2.8
-
-Abre la User Story:
-
-- `Como lider quiero contar con un resumen ejecutivo del estado operativo`
-
-Agrega como `Child`:
-
-- `Documentar flujo principal`
-
-### Paso 6.2.9
-
-Relaciona los bugs:
-
-- `Error al filtrar solicitudes por prioridad alta`
-- `La vista de detalle no muestra el estado actualizado`
-
-Como:
-
-- `Related`, o
-- `Child`
-
-Mi recomendacion:
-
-- `Related`
-
-porque te da un discurso mas natural para demo de incidencia.
-
-## 6.3 Ajustar estado y asignaciones
-
-Para que la demo se vea viva:
-
-- deja 1 User Story en `New`
-- deja 1 User Story en `Active`
-- deja 1 Task en `Closed`
-- deja 1 Bug en `Active`
-
-Si quieres, asigna work items a:
-
-- tu usuario
-- otro usuario de prueba
-
-Eso mejora mucho las consultas tipo:
-
-- `Show my assigned work items.`
-
-## 7. CREAR LA PIPELINE
-
-## 7.1 Crear pipeline desde YAML
-
-### Paso 7.1.1
-
-Ve a:
-
-- `Pipelines`
-
-### Paso 7.1.2
-
-Haz clic en:
-
-- `New pipeline`
-
-### Paso 7.1.3
-
-Cuando pregunte donde esta el codigo:
-
-- selecciona `Azure Repos Git`
-
-### Paso 7.1.4
-
-Elige el repo:
-
-- `portal-servicios-demo`
-
-### Paso 7.1.5
-
-Elige:
-
-- `Existing Azure Pipelines YAML file`
-
-### Paso 7.1.6
-
-Selecciona:
-
-- `/azure-pipelines.yml`
-
-### Paso 7.1.7
-
-Guarda y ejecuta la pipeline
+1. Seleccionen `Azure Repos Git`.
+2. Elijan `portal-servicios-demo`.
+3. Seleccionen `Existing Azure Pipelines YAML file`.
+4. Elijan `/azure-pipelines.yml`.
+5. Guarden y ejecuten.
 
 ### Resultado esperado
 
-Debes tener una pipeline con al menos una corrida visible.
+Deberian tener al menos una corrida visible.
 
-### Recomendacion para demo
+### Recomendacion para la demo
 
-Haz 2 ejecuciones:
+Dejen:
 
-- una exitosa,
-- otra con warning o un fallo controlado si quieres mostrar riesgo.
+- una corrida exitosa
+- otra corrida con warning o fallo controlado
 
-## 8. CREAR RAMAS Y PULL REQUESTS
+## 10. Crear ramas y pull requests
 
-## 8.1 Crear ramas
-
-Usa estas ramas:
+### Ramas sugeridas
 
 - `feature/listado-solicitudes`
 - `feature/resumen-riesgo`
 - `bugfix/filtro-prioridad`
 
-## 8.2 Crear un PR completado
+### PR completado sugerido
 
-### Paso 8.2.1
+- Titulo: `feat: listar solicitudes activas`
 
-Trabaja en:
+### PR abierto sugerido
 
-- `feature/listado-solicitudes`
+- Titulo: `feat: agregar resumen de riesgo para solicitudes`
 
-### Paso 8.2.2
-
-Haz un cambio pequeno y facil de explicar, por ejemplo:
-
-- agregar README,
-- agregar archivo de servicio,
-- agregar filtro simple.
-
-### Paso 8.2.3
-
-Haz commit y push
-
-### Paso 8.2.4
-
-Crea PR hacia `main`
-
-### Paso 8.2.5
-
-Titulo recomendado:
-
-- `feat: listar solicitudes activas`
-
-### Paso 8.2.6
-
-Vincula el PR a la User Story de consulta
-
-### Paso 8.2.7
-
-Completa el PR
-
-## 8.3 Crear un PR abierto
-
-### Paso 8.3.1
-
-Trabaja en:
-
-- `feature/resumen-riesgo`
-
-### Paso 8.3.2
-
-Haz un cambio pequeno, por ejemplo:
-
-- agregar servicio de riesgo,
-- agregar funcion con TODO,
-- agregar prueba incompleta.
-
-### Paso 8.3.3
-
-Haz commit y push
-
-### Paso 8.3.4
-
-Crea PR hacia `main`
-
-### Paso 8.3.5
-
-Titulo recomendado:
-
-- `feat: agregar resumen de riesgo para solicitudes`
-
-### Paso 8.3.6
-
-Dejalo abierto
-
-### Resultado esperado
-
-Debes tener:
-
-- 1 PR completado
-- 1 PR abierto
-
-Eso te sirve para demo de:
+Con esos dos escenarios ya pueden hablar de:
 
 - trazabilidad
 - revisiones
 - relacion con work items
 - estado del delivery
 
-## 9. CONFIGURAR POLITICAS DE RAMA
+## 11. Configurar branch policies
 
-## 9.1 Abrir configuracion del repo
+En `Repos > Branches > main > Branch policies`, activen como minimo:
 
-Ve a:
+- minimo 1 revisor
+- check de work item vinculado
+- build validation con la pipeline creada
 
-- `Repos`
-- `Branches`
+Eso ayuda mucho a que la demo se sienta realista y orientada a control.
 
-Busca:
+## 12. Opcional: preparar Test Plans
 
-- `main`
+Si quieren incluir un mensaje mas fuerte hacia QA:
 
-En el menu contextual:
+- Test Plan: `Sprint 1 Regression`
+- Suites:
+  - `Consulta de solicitudes`
+  - `Detalle de solicitud`
+  - `Resumen de riesgo`
+- Casos:
+  - `Validar consulta de solicitudes activas`
+  - `Validar filtro por prioridad`
+  - `Validar vista de detalle`
+  - `Validar resumen de riesgo`
 
-- `Branch policies`
+## 13. Configurar Copilot y MCP
 
-## 9.2 Activar estas politicas
+Sigan la guia detallada de:
 
-### Politica 1
+- [`preparativos_tecnicos_demo.md`](preparativos_tecnicos_demo.md)
 
-- `Require a minimum number of reviewers`
-- valor recomendado: `1`
+La recomendacion general es:
 
-### Politica 2
+- `MCP remoto` si la organizacion ya usa `Microsoft Entra ID` y la cuenta tiene acceso
+- `MCP local` si necesitan una ruta mas controlada
 
-- `Check for linked work items`
-- activada
+## 14. Validar la demo
 
-### Politica 3
+Antes de ensayar, comprueben que pueden hacer estas consultas:
 
-- `Add Build Validation`
-- usa la pipeline `ci-portal-servicios-demo`
-
-### Opcional
-
-- `Check for comment resolution`
-
-### Resultado esperado
-
-Cuando abras un PR, se vera mas realista porque mostrara:
-
-- revisor requerido
-- work item vinculado
-- build de validacion
-
-## 10. OPCIONAL: CREAR TEST PLAN
-
-Si quieres incluir QA con mas fuerza:
-
-### Paso 10.1
-
-Ve a:
-
-- `Test Plans`
-
-### Paso 10.2
-
-Crea un plan:
-
-- `Sprint 1 Regression`
-
-### Paso 10.3
-
-Crea suites:
-
-- `Consulta de solicitudes`
-- `Detalle de solicitud`
-- `Resumen de riesgo`
-
-### Paso 10.4
-
-Crea algunos casos:
-
-- `Validar consulta de solicitudes activas`
-- `Validar filtro por prioridad`
-- `Validar vista de detalle`
-- `Validar resumen de riesgo`
-
-No necesitas muchos. Con 3 o 4 basta para la demo.
-
-## 11. PREPARACION TECNICA DE LA DEMO
-
-## 11.1 Preparar tu entorno
-
-En tu equipo del presentador deja listo:
-
-- `Visual Studio Code`
-- `GitHub Copilot Chat`
-- acceso al repo
-- acceso al proyecto de Azure DevOps
-- MCP configurado
-
-Si usas el remoto, crea:
-
-- `.vscode/mcp.json`
-
-Con esta configuracion recomendada:
-
-```json
-{
-  "servers": {
-    "ado-remote-mcp": {
-      "url": "https://mcp.dev.azure.com/TU_ORGANIZACION",
-      "type": "http",
-      "headers": {
-        "X-MCP-Toolsets": "repos,wit,pipelines,testplan",
-        "X-MCP-Readonly": "true"
-      }
-    }
-  },
-  "inputs": []
-}
+```text
+Show my assigned work items.
+What pull requests require my review?
+List recent failed pipeline runs for this project.
+Explain this file.
 ```
 
-### Por que asi
+Si esas cuatro ya funcionan, el entorno base esta listo.
 
-- restringe herramientas
-- evita escrituras accidentales
-- mejora estabilidad de demo
+## 15. Ensayar la secuencia
 
-## 11.2 Validar Copilot
+Para el ensayo, apoyense en:
 
-En VS Code, abre Copilot Chat y prueba:
+- [`demos_en_vivo.md`](demos_en_vivo.md)
 
-`Explain this file.`
+Flujo recomendado:
 
-Si responde bien, Copilot ya esta listo.
-
-## 11.3 Validar MCP
-
-Prueba:
-
-`Show my assigned work items.`
-
-Luego:
-
-`What pull requests require my review?`
-
-Luego:
-
-`List recent failed pipeline runs for this project.`
-
-Si esas tres responden, la demo ya esta en condiciones.
-
-## 12. PREPARACION DEL CONTENIDO DE LA DEMO
-
-## 12.1 Deja estos artefactos preparados
-
-- 1 work item en riesgo
-- 1 PR abierto
-- 1 PR cerrado
-- 1 pipeline visible
-- 1 archivo de codigo facil de explicar
-
-## 12.2 Ten identificados los nombres exactos
-
-Antes de presentar, anota en un bloc:
-
-- nombre del proyecto
-- nombre del repo
-- sprint actual
-- titulo del PR abierto
-- titulo del work item que usaras
-- nombre del archivo que abriras
-
-## 12.3 Deja prompts listos
-
-### Prompt 1
-
-`Muestrame mis work items asignados en la iteracion actual y resume cuales estan en riesgo o bloqueados.`
-
-### Prompt 2
-
-`De esos work items, dime cuales tienen pull requests abiertos o pipelines recientes con fallo.`
-
-### Prompt 3
-
-`Explica este archivo y dime que parte impactaria el work item que acabamos de revisar.`
-
-### Prompt 4
-
-`Propone dos pruebas unitarias para cubrir el caso principal y un escenario borde.`
-
-### Prompt 5
-
-`Resume en lenguaje ejecutivo el estado de esta funcionalidad, el riesgo principal y las tres acciones recomendadas.`
-
-## 13. ENSAYO DE LA DEMO
-
-Haz un ensayo completo, cronometro en mano.
-
-### Tiempo ideal
-
-- 8 a 10 minutos
-
-### Flujo ideal
-
-1. Sprint o work items
+1. Work items o sprint
 2. PR o pipeline
 3. Codigo con Copilot
 4. Resumen ejecutivo
 
-### Que debes comprobar
+## 16. Problemas comunes
 
-- que no pide login inesperado
-- que el MCP responde
-- que no hay datos sensibles
-- que el archivo de codigo abre bien
-- que la pipeline aparece
+### El CSV falla por `Iteration Path`
 
-## 14. PLAN B
+Verifiquen que:
 
-## Si falla MCP
+- el nombre del proyecto coincide exactamente
+- la iteracion existe
+- la ruta del CSV coincide con el proyecto real
 
-Haz demo solo de Copilot:
+### El CSV falla por tipos de work item
 
-- explicar archivo
-- proponer refactor
-- generar pruebas
-- resumir PR
+Revisen que el proyecto este en `Agile`.
 
-## Si falla Copilot
+### Copilot responde como chat normal
 
-Haz demo solo de contexto:
+Revisen que:
 
-- work items
-- PR abierto
-- pipeline
-- cierre verbal de valor
+- el chat este en `Agent`
+- las tools del MCP esten habilitadas
+- el servidor MCP aparezca disponible
 
-## Si falla todo
+### El MCP remoto no autentica
 
-Ten 2 o 3 capturas listas:
+Revisen:
 
-- sprint
-- PR
-- pipeline
+- cuenta organizacional o invitada
+- permisos al proyecto
+- integracion con `Microsoft Entra ID`
 
-Y cuenta la historia sobre esas capturas.
+## 17. Checklist final
 
-## 15. CHECKLIST FINAL DE ULTIMO MINUTO
-
-Antes de entrar a la sesion, valida esto:
+Antes de entrar a la demostracion, validen:
 
 - proyecto creado
 - areas creadas
@@ -886,24 +403,3 @@ Antes de entrar a la sesion, valida esto:
 - MCP responde
 - prompts listos
 - capturas de respaldo listas
-
-## 16. REFERENCIAS OFICIALES
-
-- Crear proyecto:
-  - [Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/organizations/projects/create-project?view=azure-devops)
-- Crear repo:
-  - [Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/repos/git/creatingrepo?view=azure-devops)
-- Importar work items por CSV:
-  - [Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/boards/queries/import-work-items-from-csv?view=azure-devops)
-- Areas:
-  - [Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/organizations/settings/set-area-paths?view=azure-devops)
-- Iteraciones:
-  - [Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/organizations/settings/set-iteration-paths-sprints?view=azure-devops)
-- Branch policies:
-  - [Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies-overview?view=azure-devops)
-- Crear pipeline:
-  - [Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops)
-- Azure DevOps MCP remoto:
-  - [Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops)
-- Copilot Chat en IDE:
-  - [GitHub Docs](https://docs.github.com/en/copilot/how-tos/use-chat/use-chat-in-ide?tool=visualstudio)
