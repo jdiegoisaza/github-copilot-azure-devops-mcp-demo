@@ -19,6 +19,8 @@ El foco del material es mostrar como combinar:
   - configuracion tecnica recomendada para Copilot y Azure DevOps MCP
 - [`docs/azure_devops_demo_blueprint.md`](docs/azure_devops_demo_blueprint.md)
   - estructura sugerida del proyecto, backlog, repo, pipeline y PRs
+- [`docs/azure_devops_mcp_35_herramientas.md`](docs/azure_devops_mcp_35_herramientas.md)
+  - mapa de las 35 herramientas del setup remoto del taller, su alcance y sus limites
 
 ### Archivos listos para usar
 
